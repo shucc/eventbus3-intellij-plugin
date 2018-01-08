@@ -35,7 +35,7 @@ public class EventBus3LineMarkerProvider implements LineMarkerProvider {
                     if (psiElement instanceof PsiMethod) {
                         Project project = psiElement.getProject();
                         JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
-                        PsiClass eventBusClass = javaPsiFacade.findClass("de.greenrobot.event.EventBus", GlobalSearchScope.allScope(project));
+                        PsiClass eventBusClass = javaPsiFacade.findClass("org.greenrobot.eventbus.EventBus", GlobalSearchScope.allScope(project));
                         PsiMethod postMethod = eventBusClass.findMethodsByName("post", false)[0];
                         PsiMethod method = (PsiMethod) psiElement;
                         PsiClass eventClass = ((PsiClassType) method.getParameterList().getParameters()[0].getTypeElement().getType()).resolve();

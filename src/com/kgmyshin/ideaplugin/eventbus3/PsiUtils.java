@@ -19,7 +19,7 @@ public class PsiUtils {
             PsiMethod method = (PsiMethod) psiElement;
             PsiModifierList modifierList = method.getModifierList();
             for (PsiAnnotation psiAnnotation : modifierList.getAnnotations()) {
-                if (psiAnnotation.getQualifiedName().equals("de.greenrobot.event.Subscribe")) {
+                if (psiAnnotation.getQualifiedName().equals("org.greenrobot.eventbus.Subscribe")) {
                     return true;
                 }
             }

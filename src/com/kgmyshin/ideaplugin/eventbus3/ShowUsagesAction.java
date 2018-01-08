@@ -46,6 +46,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupChooserBuilder;
+import com.intellij.ui.table.JBTable;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Disposer;
@@ -1047,7 +1048,7 @@ public class ShowUsagesAction extends AnAction implements PopupAction{
         return newFileEditor instanceof TextEditor ? ((TextEditor)newFileEditor).getEditor() : null;
     }
 
-    private static class MyTable extends JBTableWithHintProvider implements DataProvider {
+    private static class MyTable extends JBTable implements DataProvider {
         @Override
         public boolean getScrollableTracksViewportWidth() {
             return true;
@@ -1064,7 +1065,6 @@ public class ShowUsagesAction extends AnAction implements PopupAction{
             return null;
         }
 
-        @Override
         @Nullable
         protected PsiElement getPsiElementForHint(Object selectedValue) {
             if (selectedValue instanceof UsageNode) {
