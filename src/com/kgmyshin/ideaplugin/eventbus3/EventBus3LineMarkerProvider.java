@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,48 +27,40 @@ public class EventBus3LineMarkerProvider implements LineMarkerProvider {
 
     public static final int MAX_USAGES = 100;
 
-    private static GutterIconNavigationHandler<PsiElement> SHOW_SENDERS =
-            new GutterIconNavigationHandler<PsiElement>() {
-                @Override
-                public void navigate(MouseEvent e, PsiElement psiElement) {
-                    if (psiElement instanceof PsiMethod) {
-                        Project project = psiElement.getProject();
-                        JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
-                        PsiClass eventBusClass = javaPsiFacade.findClass("org.greenrobot.eventbus.EventBus", GlobalSearchScope.allScope(project));
-                        PsiMethod postMethod = eventBusClass.findMethodsByName("post", false)[0];
-                        PsiMethod method = (PsiMethod) psiElement;
-                        PsiClass eventClass = ((PsiClassType) method.getParameterList().getParameters()[0].getTypeElement().getType()).resolve();
-                        new ShowUsagesAction(new SenderFilter(eventClass)).startFindUsages(postMethod, new RelativePoint(e), PsiUtilBase.findEditor(psiElement), MAX_USAGES);
-                    }
-                }
-            };
+    private static GutterIconNavigationHandler<PsiElement> SHOW_SENDERS = (mouseEvent, psiElement) -> {
+        if (psiElement instanceof PsiMethod) {
+            Project project = psiElement.getProject();
+            JavaPsiFacade javaPsiFacade = JavaPsiFacade.getInstance(project);
+            PsiClass eventBusClass = javaPsiFacade.findClass("org.greenrobot.eventbus.EventBus", GlobalSearchScope.allScope(project));
+            PsiMethod postMethod = eventBusClass.findMethodsByName("post", false)[0];
+            PsiMethod method = (PsiMethod) psiElement;
+            PsiClass eventClass = ((PsiClassType) method.getParameterList().getParameters()[0].getTypeElement().getType()).resolve();
+            new ShowUsagesAction(new SenderFilter(eventClass)).startFindUsages(postMethod, new RelativePoint(mouseEvent), PsiUtilBase.findEditor(psiElement), MAX_USAGES);
+        }
+    };
 
-    private static GutterIconNavigationHandler<PsiElement> SHOW_RECEIVERS =
-            new GutterIconNavigationHandler<PsiElement>() {
-                @Override
-                public void navigate(MouseEvent e, PsiElement psiElement) {
-                    if (psiElement instanceof PsiMethodCallExpression) {
-                        PsiMethodCallExpression expression = (PsiMethodCallExpression) psiElement;
-                        PsiType[] expressionTypes = expression.getArgumentList().getExpressionTypes();
-                        if (expressionTypes.length > 0) {
-                            PsiClass eventClass = PsiUtils.getClass(expressionTypes[0]);
-                            if (eventClass != null) {
-                                new ShowUsagesAction(new ReceiverFilter()).startFindUsages(eventClass, new RelativePoint(e), PsiUtilBase.findEditor(psiElement), MAX_USAGES);
-                            }
-                        }
-                    }
+    private static GutterIconNavigationHandler<PsiElement> SHOW_RECEIVERS = (mouseEvent, psiElement) -> {
+        if (psiElement instanceof PsiMethodCallExpression) {
+            PsiMethodCallExpression expression = (PsiMethodCallExpression) psiElement;
+            PsiType[] expressionTypes = expression.getArgumentList().getExpressionTypes();
+            if (expressionTypes.length > 0) {
+                PsiClass eventClass = PsiUtils.getClass(expressionTypes[0]);
+                if (eventClass != null) {
+                    new ShowUsagesAction(new ReceiverFilter()).startFindUsages(eventClass, new RelativePoint(mouseEvent), PsiUtilBase.findEditor(psiElement), MAX_USAGES);
                 }
-            };
+            }
+        }
+    };
 
     @Nullable
     @Override
     public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement psiElement) {
         if (PsiUtils.isEventBusPost(psiElement)) {
-            return new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), ICON,
+            return new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), ICON,
                     Pass.UPDATE_ALL, null, SHOW_RECEIVERS,
                     GutterIconRenderer.Alignment.LEFT);
         } else if (PsiUtils.isEventBusReceiver(psiElement)) {
-            return new LineMarkerInfo<PsiElement>(psiElement, psiElement.getTextRange(), ICON,
+            return new LineMarkerInfo<>(psiElement, psiElement.getTextRange(), ICON,
                     Pass.UPDATE_ALL, null, SHOW_SENDERS,
                     GutterIconRenderer.Alignment.LEFT);
         }

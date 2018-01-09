@@ -39,7 +39,7 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 
-class  ShowUsagesTableCellRenderer implements TableCellRenderer {
+class ShowUsagesTableCellRenderer implements TableCellRenderer {
 
     private final UsageViewImpl myUsageView;
 
@@ -50,9 +50,7 @@ class  ShowUsagesTableCellRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable list, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         UsageNode usageNode = value instanceof UsageNode ? (UsageNode) value : null;
-
         Usage usage = usageNode == null ? null : usageNode.getUsage();
-
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         Color fileBgColor = getBackgroundColor(isSelected, usage);
         final Color bg = UIUtil.getListSelectionBackground();
@@ -67,12 +65,9 @@ class  ShowUsagesTableCellRenderer implements TableCellRenderer {
             }
             return panel;
         }
-
-
         SimpleColoredComponent textChunks = new SimpleColoredComponent();
         textChunks.setIpad(new Insets(0, 0, 0, 0));
         textChunks.setBorder(null);
-
         if (column == 0) {
             GroupNode parent = (GroupNode) usageNode.getParent();
             appendGroupText(parent, panel, fileBgColor);

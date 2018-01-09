@@ -19,7 +19,7 @@ public class PsiUtils {
             PsiMethod method = (PsiMethod) psiElement;
             PsiModifierList modifierList = method.getModifierList();
             for (PsiAnnotation psiAnnotation : modifierList.getAnnotations()) {
-                if (psiAnnotation.getQualifiedName().equals("org.greenrobot.eventbus.Subscribe")) {
+                if ("org.greenrobot.eventbus.Subscribe".equals(psiAnnotation.getQualifiedName())) {
                     return true;
                 }
             }
@@ -34,7 +34,7 @@ public class PsiUtils {
             if (method != null) {
                 String name = method.getName();
                 PsiElement parent = method.getParent();
-                if (name != null && name.equals("post") && parent instanceof PsiClass) {
+                if ("post".equals(name) && parent instanceof PsiClass) {
                     PsiClass implClass = (PsiClass) parent;
                     if (isEventBusClass(implClass) || isSuperClassEventBus(implClass)) {
                         return true;
@@ -46,11 +46,7 @@ public class PsiUtils {
     }
 
     private static boolean isEventBusClass(PsiClass psiClass) {
-        if (psiClass.getName().equals("EventBus")) {
-            return true;
-        } else {
-            return false;
-        }
+        return "EventBus".equals(psiClass.getName());
     }
 
     private static boolean isSuperClassEventBus(PsiClass psiClass) {
@@ -59,11 +55,10 @@ public class PsiUtils {
             return false;
         }
         for (PsiClass superClass : supers) {
-            if (superClass.getName().equals("EventBus")) {
+            if ("EventBus".equals(superClass.getName())) {
                 return true;
             }
         }
         return false;
     }
-
 }

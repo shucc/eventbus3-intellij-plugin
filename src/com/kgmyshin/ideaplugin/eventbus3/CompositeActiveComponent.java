@@ -27,7 +27,6 @@ class CompositeActiveComponent implements ActiveComponent {
 
     public CompositeActiveComponent(@NotNull ActiveComponent... components) {
         myComponents = components;
-
         myComponent = new JPanel(new FlowLayout());
         myComponent.setOpaque(false);
         for (ActiveComponent component : components) {

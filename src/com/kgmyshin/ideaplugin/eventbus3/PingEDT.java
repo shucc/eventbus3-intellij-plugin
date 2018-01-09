@@ -31,7 +31,7 @@ public class PingEDT {
     private volatile boolean stopped;
     private volatile boolean pinged;
     private final Condition<?> myShutUpCondition;
-    private final int myMaxUnitOfWorkThresholdMs; //-1 means indefinite
+    private final int myMaxUnitOfWorkThresholdMs;
 
     private final AtomicBoolean invokeLaterScheduled = new AtomicBoolean();
     private final Runnable myUpdateRunnable = new Runnable() {
@@ -48,8 +48,7 @@ public class PingEDT {
             while (true) {
                 if (processNext()) {
                     processed++;
-                }
-                else {
+                } else {
                     break;
                 }
                 long finish = System.currentTimeMillis();
